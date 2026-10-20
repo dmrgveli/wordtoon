@@ -1,3 +1,33 @@
 # Wordtoon
 
-TOEFL vocabulary app with memorable AI images.
+Mobile-first web app for learning high-frequency TOEFL words. Every word gets a memorable
+cartoon image (e.g. *genius* → a caricatured Einstein sticking his tongue out), and flashcards
+reinforce it.
+
+## Stack
+
+- Vite + React + TypeScript, no router or state library
+- Installable PWA (`public/manifest.webmanifest`, `public/sw.js`) with offline cache
+- Progress is stored in `localStorage` (`wordtoon.progress.v1`)
+- `base: './'` in `vite.config.ts`, so the same build runs on GitHub Pages and inside a
+  Capacitor WebView for the later Android app (`npx cap init` → `npx cap add android`, `webDir: dist`)
+
+## Develop
+
+```sh
+npm install
+npm run dev      # http://localhost:5173
+npm run build    # outputs dist/
+npm run preview
+```
+
+## Content
+
+- Words: `src/data/words.ts` (word, part of speech, definition, example, Turkish, image prompt)
+- Images: `public/images/<id>.webp` (or `.png` / `.jpg`). Until one exists, the card shows the
+  image prompt as a placeholder.
+
+## Deploy
+
+Pushing to `main` runs `.github/workflows/deploy.yml`, which builds and publishes to GitHub Pages.
+In the repository settings, set **Pages → Source** to **GitHub Actions** once.
