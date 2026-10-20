@@ -1,0 +1,3 @@
+Put one image per word here, named by the word id: `genius.webp`, `detective.webp`, ...
+Supported extensions are listed in `src/components/WordImage.tsx`. Until an image exists,
+the card shows a placeholder with the word's image prompt.
