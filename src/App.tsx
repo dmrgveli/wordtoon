@@ -1,49 +1,42 @@
-import { useState } from 'react'
-import { WORDS } from './data/words'
-import { useProgress } from './progress'
-import { Flashcards } from './components/Flashcards'
-import { WordList } from './components/WordList'
-
-type Screen = 'home' | 'flashcards' | 'list'
+import { AnimatePresence, MotionConfig, motion } from 'motion/react'
+import { useCallback, useState } from 'react'
+import { WORDS, type Word } from './data/words'
+import { useStore } from './lib/store'
+import { TabBar, type Tab } from './components/TabBar'
+import { WordSheet } from './components/WordSheet'
+import { Home } from './screens/Home'
+import { Cards } from './screens/Cards'
+import { Quiz } from './screens/Quiz'
+import { Words } from './screens/Words'
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('home')
-  const { progress, mark, reset } = useProgress()
-
-  const known = WORDS.filter((w) => progress[w.id]?.status === 'known').length
-  const learning = WORDS.filter((w) => progress[w.id]?.status === 'learning').length
-  const pct = Math.round((known / WORDS.length) * 100)
-
-  if (screen === 'flashcards') {
-    return <Flashcards words={WORDS} progress={progress} onMark={mark} onExit={() => setScreen('home')} />
-  }
-  if (screen === 'list') {
-    return <WordList words={WORDS} progress={progress} onExit={() => setScreen('home')} />
-  }
+  const store = useStore()
+  const [tab, setTab] = useState<Tab>('home')
+  const [openWord, setOpenWord] = useState<Word | null>(null)
+  const closeSheet = useCallback(() => setOpenWord(null), [])
 
   return (
-    <section className="screen home">
-      <h1>Wordtoon</h1>
-      <p className="muted">TOEFL kelimelerini akılda kalan görsellerle öğren.</p>
-
-      <div className="stats">
-        <div className="ring" style={{ '--pct': pct } as React.CSSProperties}>
-          <span>{pct}%</span>
-        </div>
-        <div>
-          <p><strong>{known}</strong> biliyorum</p>
-          <p><strong>{learning}</strong> çalışılıyor</p>
-          <p><strong>{WORDS.length - known - learning}</strong> yeni</p>
-        </div>
-      </div>
-
-      <button className="btn primary big" onClick={() => setScreen('flashcards')}>Kartlara başla</button>
-      <button className="btn ghost" onClick={() => setScreen('list')}>Kelime listesi</button>
-      {known + learning > 0 && (
-        <button className="btn link" onClick={() => { if (confirm('İlerleme sıfırlansın mı?')) reset() }}>
-          İlerlemeyi sıfırla
-        </button>
-      )}
-    </section>
+    <MotionConfig reducedMotion="user">
+      <div className="bg-blobs" aria-hidden="true"><span /><span /><span /></div>
+      <AnimatePresence mode="wait">
+        <motion.main
+          key={tab}
+          className={`screen screen-${tab}`}
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.22, ease: [0.2, 0.7, 0.2, 1] }}
+        >
+          {tab === 'home' && <Home store={store} onStart={setTab} onOpenWord={setOpenWord} />}
+          {tab === 'cards' && <Cards words={WORDS} store={store} />}
+          {tab === 'quiz' && <Quiz words={WORDS} store={store} />}
+          {tab === 'words' && <Words words={WORDS} progress={store.progress} onOpen={setOpenWord} />}
+        </motion.main>
+      </AnimatePresence>
+      <TabBar tab={tab} onChange={setTab} />
+      <AnimatePresence>
+        {openWord && <WordSheet key={openWord.id} word={openWord} store={store} onClose={closeSheet} />}
+      </AnimatePresence>
+    </MotionConfig>
   )
 }

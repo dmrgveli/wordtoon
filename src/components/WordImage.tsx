@@ -4,14 +4,21 @@ import type { Word } from '../data/words'
 // Images live in public/images/<id>.<ext>; the first extension that loads wins.
 const EXTENSIONS = ['webp', 'png', 'jpg']
 
-export function WordImage({ word }: { word: Word }) {
+export function WordImage({ word, compact = false }: { word: Word; compact?: boolean }) {
   const [attempt, setAttempt] = useState(0)
+  const cls = `word-image pos-${word.partOfSpeech}${compact ? ' compact' : ''}`
 
   if (attempt >= EXTENSIONS.length) {
     return (
-      <div className={`word-image placeholder pos-${word.partOfSpeech}`} aria-label={`${word.word} için görsel henüz yok`}>
-        <span className="placeholder-icon" aria-hidden="true">🎨</span>
-        <span className="placeholder-text">{word.imagePrompt}</span>
+      <div className={`${cls} placeholder`} aria-label={`${word.word} için görsel henüz yok`}>
+        {compact ? (
+          <span className="placeholder-letter">{word.word[0]}</span>
+        ) : (
+          <>
+            <span className="placeholder-icon" aria-hidden="true">🎨</span>
+            <span className="placeholder-text">{word.imagePrompt}</span>
+          </>
+        )}
       </div>
     )
   }
@@ -19,11 +26,12 @@ export function WordImage({ word }: { word: Word }) {
   return (
     <img
       key={attempt}
-      className={`word-image pos-${word.partOfSpeech}`}
+      className={cls}
       src={`./images/${word.id}.${EXTENSIONS[attempt]}`}
-      alt={word.imagePrompt}
+      alt={compact ? '' : word.imagePrompt}
       onError={() => setAttempt((a) => a + 1)}
       draggable={false}
+      loading="lazy"
     />
   )
 }
