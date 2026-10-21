@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
 
-export function Ring({ value, size = 120, stroke = 14, children, color = 'var(--tomato)' }: {
+export function Ring({ value, size = 120, stroke = 12, children, color = 'var(--accent)' }: {
   value: number
   size?: number
   stroke?: number
@@ -13,7 +13,7 @@ export function Ring({ value, size = 120, stroke = 14, children, color = 'var(--
   return (
     <div className="ring" style={{ width: size, height: size }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <circle cx={c} cy={c} r={r} fill="var(--surface)" stroke="var(--ink)" strokeWidth={stroke + 5} />
+        <circle cx={c} cy={c} r={r} fill="var(--surface)" stroke="var(--line)" strokeWidth={stroke + 4} />
         <circle cx={c} cy={c} r={r} fill="none" stroke="var(--track)" strokeWidth={stroke} />
         <motion.circle
           cx={c}

@@ -6,10 +6,13 @@ reinforce it.
 
 ## Features
 
-- **Home:** daily goal ring, day streak, XP, word of the day, progress per part of speech
-- **Cards:** swipe right for "know", left for "again" (or use the buttons), tap to flip, pronunciation
-- **Quiz:** 10 multiple-choice questions (definition → word, word → Turkish), combo counter, results
-- **Words:** search, status filters, bottom-sheet detail with pronunciation and manual marking
+- **Search first:** live results as you type (English word, Turkish meaning or definition), match highlighting,
+  keyboard navigation, "did you mean" suggestions for typos, recently viewed words, word of the day, A–Z grid
+- **A page per word** (`#/word/<id>`, shareable): the illustration grows out of the search result into a
+  tilting hero on a background matching its part-of-speech colour, letter-by-letter title, pronunciation,
+  Turkish meaning, definition, example sentence with the word marked, a tap-to-reveal memory hook,
+  a fill-in-the-blank mini quiz, known / review toggle, related words, swipe for previous / next
+- **Practice:** swipe flashcards (`#/cards`) and a 10-question quiz (`#/quiz`)
 - Light and dark themes, animations via `motion`, respects reduced-motion settings
 
 ## Stack

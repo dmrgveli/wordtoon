@@ -5,7 +5,6 @@ import type { Progress, Status, Store } from '../lib/store'
 import { POS_TR, haptic, shuffle, speak, PRESS } from '../lib/util'
 import { Confetti } from '../components/Confetti'
 import { Icon } from '../components/Icon'
-import { Mascot } from '../components/Mascot'
 import { WordImage } from '../components/WordImage'
 
 const SWIPE_DISTANCE = 110
@@ -152,7 +151,7 @@ export function Cards({ words, store }: { words: Word[]; store: Store }) {
       <motion.section className="finish" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
         <Confetti />
         <motion.div initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 10, delay: 0.1 }}>
-          <Mascot size={120} mood="wow" />
+          <span className="finish-emoji">🏆</span>
         </motion.div>
         <h2 className="display">Tur bitti!</h2>
         <p className="muted">Tüm kartları tamamladın.</p>
