@@ -2,9 +2,10 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import type { Word } from '../data/words'
 import type { Store } from '../lib/store'
-import { POS_TR, haptic, shuffle, speak } from '../lib/util'
+import { POS_TR, haptic, shuffle, speak, PRESS } from '../lib/util'
 import { Confetti } from '../components/Confetti'
 import { Icon } from '../components/Icon'
+import { Mascot } from '../components/Mascot'
 import { Ring } from '../components/Ring'
 import { WordImage } from '../components/WordImage'
 
@@ -79,17 +80,20 @@ export function Quiz({ words, store }: { words: Word[]; store: Store }) {
     return (
       <motion.section className="finish" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
         {ratio >= 0.7 && <Confetti />}
-        <Ring value={ratio} size={150} stroke={14}>
+        <div className="score-row">
+          <Mascot size={96} mood={ratio >= 0.7 ? 'wow' : ratio >= 0.4 ? 'happy' : 'sad'} />
+          <Ring value={ratio} size={130} stroke={14}>
           <strong className="big-num">{score}</strong>
           <span className="muted tiny">/ {questions.length}</span>
-        </Ring>
+          </Ring>
+        </div>
         <h2 className="display">{ratio === 1 ? 'Kusursuz! 🏆' : ratio >= 0.7 ? 'Harika iş! 🎉' : ratio >= 0.4 ? 'Fena değil 💪' : 'Tekrar deneyelim 📚'}</h2>
         <div className="result-dots">
           {results.map((ok, i) => (
             <motion.span key={i} className={ok ? 'ok' : 'bad'} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3 + i * 0.05 }} />
           ))}
         </div>
-        <motion.button className="btn primary wide" whileTap={{ scale: 0.96 }} onClick={restart}>
+        <motion.button className="btn primary wide" whileTap={PRESS} onClick={restart}>
           <Icon name="refresh" size={18} /> Yeni quiz
         </motion.button>
       </motion.section>
@@ -153,7 +157,7 @@ export function Quiz({ words, store }: { words: Word[]; store: Store }) {
                   initial={{ opacity: 0, y: 12 }}
                   animate={state === 'wrong' ? { opacity: 1, y: 0, x: [0, -10, 10, -6, 6, 0] } : { opacity: 1, y: 0, scale: state === 'correct' ? [1, 1.04, 1] : 1 }}
                   transition={{ delay: picked ? 0 : 0.05 * i, duration: state === 'wrong' ? 0.4 : 0.3 }}
-                  whileTap={!picked ? { scale: 0.97 } : undefined}
+                  whileTap={!picked ? PRESS : undefined}
                   onClick={() => choose(o)}
                   disabled={!!picked}
                 >
@@ -177,7 +181,7 @@ export function Quiz({ words, store }: { words: Word[]; store: Store }) {
               >
                 <p><strong>{q.word.word}</strong> · {q.word.turkish}</p>
                 <p className="muted small">💡 {q.word.hook}</p>
-                <motion.button className="btn primary wide" whileTap={{ scale: 0.96 }} onClick={next}>
+                <motion.button className="btn primary wide" whileTap={PRESS} onClick={next}>
                   Devam <Icon name="arrow" size={18} />
                 </motion.button>
               </motion.div>

@@ -26,3 +26,6 @@ export const POS_TR: Record<string, string> = {
   adjective: 'Sıfat',
   adverb: 'Zarf',
 }
+
+// Shared "press into the page" tap effect for buttons with a hard offset shadow.
+export const PRESS = { x: 3, y: 3 } as const

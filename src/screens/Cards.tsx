@@ -2,9 +2,10 @@ import { AnimatePresence, animate, motion, useMotionValue, useTransform, type Pa
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Word } from '../data/words'
 import type { Progress, Status, Store } from '../lib/store'
-import { POS_TR, haptic, shuffle, speak } from '../lib/util'
+import { POS_TR, haptic, shuffle, speak, PRESS } from '../lib/util'
 import { Confetti } from '../components/Confetti'
 import { Icon } from '../components/Icon'
+import { Mascot } from '../components/Mascot'
 import { WordImage } from '../components/WordImage'
 
 const SWIPE_DISTANCE = 110
@@ -19,8 +20,9 @@ function buildQueue(words: Word[], progress: Progress): string[] {
 
 type Fling = { dir: 1 | -1; nonce: number } | null
 
-function SwipeCard({ word, depth, fling, onDone }: {
+function SwipeCard({ word, number, depth, fling, onDone }: {
   word: Word
+  number: number
   depth: number
   fling: Fling
   onDone: (status: Status) => void
@@ -78,9 +80,13 @@ function SwipeCard({ word, depth, fling, onDone }: {
         transition={{ type: 'spring', stiffness: 220, damping: 22 }}
       >
         <div className="face front">
+          <div className="card-top">
+            <span className={`pos-tag pos-${word.partOfSpeech}`}>{POS_TR[word.partOfSpeech]}</span>
+            <span className="card-no">#{String(number).padStart(2, '0')}</span>
+          </div>
           <WordImage word={word} />
           <div className="face-word">
-            <h2>{word.word}</h2>
+            <h2 className={word.word.length > 10 ? 'long' : undefined}>{word.word}</h2>
             <button
               className="icon-btn soft"
               onPointerDown={(e) => e.stopPropagation()}
@@ -90,12 +96,11 @@ function SwipeCard({ word, depth, fling, onDone }: {
               <Icon name="speaker" size={20} />
             </button>
           </div>
-          <span className={`pos-tag pos-${word.partOfSpeech}`}>{POS_TR[word.partOfSpeech]}</span>
-          <span className="hint">Anlamı için dokun</span>
+          <span className="hint">Anlamı için dokun ↻</span>
         </div>
         <div className="face back">
           <span className={`pos-tag pos-${word.partOfSpeech}`}>{POS_TR[word.partOfSpeech]}</span>
-          <h2>{word.word}</h2>
+          <h2 className={word.word.length > 10 ? 'long' : undefined}>{word.word}</h2>
           <p className="turkish">{word.turkish}</p>
           <p className="definition">{word.definition}</p>
           <p className="example">“{word.example}”</p>
@@ -108,6 +113,7 @@ function SwipeCard({ word, depth, fling, onDone }: {
 
 export function Cards({ words, store }: { words: Word[]; store: Store }) {
   const byId = useMemo(() => new Map(words.map((w) => [w.id, w])), [words])
+  const numberOf = useMemo(() => new Map(words.map((w, i) => [w.id, i + 1])), [words])
   // Progress is read once to order the deck; later marks must not reshuffle it.
   const [queue, setQueue] = useState(() => buildQueue(words, store.progress))
   const [total, setTotal] = useState(queue.length)
@@ -145,8 +151,8 @@ export function Cards({ words, store }: { words: Word[]; store: Store }) {
     return (
       <motion.section className="finish" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
         <Confetti />
-        <motion.div className="finish-badge" initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.1 }}>
-          <Icon name="trophy" size={44} />
+        <motion.div initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 10, delay: 0.1 }}>
+          <Mascot size={120} mood="wow" />
         </motion.div>
         <h2 className="display">Tur bitti!</h2>
         <p className="muted">Tüm kartları tamamladın.</p>
@@ -154,7 +160,7 @@ export function Cards({ words, store }: { words: Word[]; store: Store }) {
           <div className="stat known"><strong>{done.known}</strong><span>Biliyorum</span></div>
           <div className="stat learning"><strong>{done.learning}</strong><span>Tekrar</span></div>
         </div>
-        <motion.button className="btn primary wide" whileTap={{ scale: 0.96 }} onClick={restart}>
+        <motion.button className="btn primary wide" whileTap={PRESS} onClick={restart}>
           <Icon name="refresh" size={18} /> Yeni tur
         </motion.button>
       </motion.section>
@@ -178,6 +184,7 @@ export function Cards({ words, store }: { words: Word[]; store: Store }) {
               <SwipeCard
                 key={id}
                 word={byId.get(id)!}
+                number={numberOf.get(id)!}
                 depth={depth}
                 fling={depth === 0 ? fling : null}
                 onDone={answer}
@@ -188,11 +195,11 @@ export function Cards({ words, store }: { words: Word[]; store: Store }) {
       </div>
 
       <div className="swipe-actions">
-        <motion.button className="round-btn again" whileTap={{ scale: 0.88 }} onClick={() => setFling({ dir: -1, nonce: Date.now() })} aria-label="Bilmiyorum">
+        <motion.button className="round-btn again" whileTap={PRESS} onClick={() => setFling({ dir: -1, nonce: Date.now() })} aria-label="Bilmiyorum">
           <Icon name="x" size={28} stroke={2.6} />
         </motion.button>
         <span className="muted tiny swipe-hint">← tekrar · biliyorum →</span>
-        <motion.button className="round-btn know" whileTap={{ scale: 0.88 }} onClick={() => setFling({ dir: 1, nonce: Date.now() })} aria-label="Biliyorum">
+        <motion.button className="round-btn know" whileTap={PRESS} onClick={() => setFling({ dir: 1, nonce: Date.now() })} aria-label="Biliyorum">
           <Icon name="check" size={28} stroke={2.6} />
         </motion.button>
       </div>

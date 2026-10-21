@@ -16,7 +16,7 @@ export function TabBar({ tab, onChange }: { tab: Tab; onChange: (t: Tab) => void
       {TABS.map((t) => (
         <button key={t.id} className={`tab ${tab === t.id ? 'on' : ''}`} onClick={() => onChange(t.id)} aria-current={tab === t.id ? 'page' : undefined}>
           {tab === t.id && <motion.span layoutId="tab-pill" className="tab-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
-          <motion.span className="tab-icon" animate={{ y: tab === t.id ? -1 : 0, scale: tab === t.id ? 1.08 : 1 }}>
+          <motion.span className="tab-icon" animate={{ rotate: tab === t.id ? [0, -12, 8, 0] : 0 }} transition={{ duration: 0.4 }}>
             <Icon name={t.icon} size={22} />
           </motion.span>
           <span className="tab-label">{t.label}</span>

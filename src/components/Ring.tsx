@@ -1,36 +1,31 @@
 import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
 
-export function Ring({ value, size = 120, stroke = 12, children, color = 'url(#ring-grad)' }: {
+export function Ring({ value, size = 120, stroke = 14, children, color = 'var(--tomato)' }: {
   value: number
   size?: number
   stroke?: number
   children?: ReactNode
   color?: string
 }) {
-  const r = (size - stroke) / 2
+  const r = (size - stroke) / 2 - 2
+  const c = size / 2
   return (
     <div className="ring" style={{ width: size, height: size }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <defs>
-          <linearGradient id="ring-grad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="var(--accent)" />
-            <stop offset="100%" stopColor="var(--accent-2)" />
-          </linearGradient>
-        </defs>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--track)" strokeWidth={stroke} />
+        <circle cx={c} cy={c} r={r} fill="var(--surface)" stroke="var(--ink)" strokeWidth={stroke + 5} />
+        <circle cx={c} cy={c} r={r} fill="none" stroke="var(--track)" strokeWidth={stroke} />
         <motion.circle
-          cx={size / 2}
-          cy={size / 2}
+          cx={c}
+          cy={c}
           r={r}
           fill="none"
           stroke={color}
           strokeWidth={stroke}
-          strokeLinecap="round"
-          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+          transform={`rotate(-90 ${c} ${c})`}
           initial={{ pathLength: 0 }}
           animate={{ pathLength: Math.max(0.001, Math.min(1, value)) }}
-          transition={{ duration: 1, ease: [0.2, 0.7, 0.2, 1] }}
+          transition={{ type: 'spring', stiffness: 60, damping: 14 }}
         />
       </svg>
       <div className="ring-label">{children}</div>

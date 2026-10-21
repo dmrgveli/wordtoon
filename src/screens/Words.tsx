@@ -2,8 +2,9 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useMemo, useState } from 'react'
 import type { Word } from '../data/words'
 import type { Progress } from '../lib/store'
-import { POS_TR } from '../lib/util'
+import { POS_TR, PRESS } from '../lib/util'
 import { Icon } from '../components/Icon'
+import { Mascot } from '../components/Mascot'
 import { WordImage } from '../components/WordImage'
 
 const FILTERS = [
@@ -61,7 +62,7 @@ export function Words({ words, progress, onOpen }: { words: Word[]; progress: Pr
                 animate={{ opacity: 1, y: 0, transition: { delay: Math.min(i, 12) * 0.025 } }}
                 exit={{ opacity: 0, scale: 0.96 }}
               >
-                <motion.button className="word-row" whileTap={{ scale: 0.98 }} onClick={() => onOpen(w)}>
+                <motion.button className="word-row" whileTap={PRESS} onClick={() => onOpen(w)}>
                   <div className="thumb"><WordImage word={w} compact /></div>
                   <div className="word-row-text">
                     <strong>{w.word}</strong>
@@ -74,7 +75,12 @@ export function Words({ words, progress, onOpen }: { words: Word[]; progress: Pr
           })}
         </AnimatePresence>
       </motion.ul>
-      {!shown.length && <p className="muted center">Eşleşen kelime yok.</p>}
+      {!shown.length && (
+        <div className="empty">
+          <Mascot size={80} mood="sad" />
+          <p className="muted">Eşleşen kelime yok.</p>
+        </div>
+      )}
     </div>
   )
 }

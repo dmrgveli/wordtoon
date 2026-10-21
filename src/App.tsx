@@ -17,7 +17,6 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="bg-blobs" aria-hidden="true"><span /><span /><span /></div>
       <AnimatePresence mode="wait">
         <motion.main
           key={tab}
