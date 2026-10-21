@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import { useMemo } from 'react'
 
-const COLORS = ['#ff5a36', '#ffd23f', '#3ddc97', '#7cc6fe', '#b79cff', '#141414']
+const COLORS = ['#ff5a36', '#ffc43d', '#3ddc97', '#7cc6fe', '#b79cff']
 
 export function Confetti({ count = 70 }: { count?: number }) {
   const pieces = useMemo(

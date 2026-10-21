@@ -5,7 +5,6 @@ import type { Store } from '../lib/store'
 import { POS_TR, haptic, shuffle, speak, PRESS } from '../lib/util'
 import { Confetti } from '../components/Confetti'
 import { Icon } from '../components/Icon'
-import { Mascot } from '../components/Mascot'
 import { Ring } from '../components/Ring'
 import { WordImage } from '../components/WordImage'
 
@@ -81,7 +80,7 @@ export function Quiz({ words, store }: { words: Word[]; store: Store }) {
       <motion.section className="finish" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
         {ratio >= 0.7 && <Confetti />}
         <div className="score-row">
-          <Mascot size={96} mood={ratio >= 0.7 ? 'wow' : ratio >= 0.4 ? 'happy' : 'sad'} />
+          <span className="finish-emoji">{ratio >= 0.7 ? '🤩' : ratio >= 0.4 ? '🙂' : '📚'}</span>
           <Ring value={ratio} size={130} stroke={14}>
           <strong className="big-num">{score}</strong>
           <span className="muted tiny">/ {questions.length}</span>
