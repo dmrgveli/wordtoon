@@ -1,9 +1,10 @@
 import { motion } from 'motion/react'
 import { WORDS, type Word } from '../data/words'
 import type { Store } from '../lib/store'
-import { POS_TR } from '../lib/util'
+import { POS_TR, PRESS } from '../lib/util'
 import { AnimatedNumber } from '../components/AnimatedNumber'
 import { Icon } from '../components/Icon'
+import { Mascot } from '../components/Mascot'
 import { Ring } from '../components/Ring'
 import { WordImage } from '../components/WordImage'
 
@@ -46,10 +47,7 @@ export function Home({ store, onStart, onOpenWord }: {
   return (
     <motion.div className="stack" variants={{ show: { transition: { staggerChildren: 0.06 } } }} initial="hidden" animate="show">
       <motion.header className="home-head" variants={item}>
-        <div>
-          <p className="eyebrow">{greeting()} 👋</p>
-          <h1 className="display">Wordtoon</h1>
-        </div>
+        <h1 className="logo" aria-label="Wordtoon"><span>Word</span><span className="logo-toon">toon</span></h1>
         <div className="chips">
           <span className={`chip streak ${stats.streak > 0 ? 'on' : ''}`} title="Gün serisi">
             <Icon name="flame" size={16} fill /> {stats.streak}
@@ -60,6 +58,14 @@ export function Home({ store, onStart, onOpenWord }: {
         </div>
       </motion.header>
 
+      <motion.section className="hello" variants={item}>
+        <Mascot size={76} mood={goal >= 1 ? 'wow' : 'happy'} />
+        <p className="bubble">
+          {greeting()}!{' '}
+          {goal >= 1 ? 'Bugünkü hedef tamam, harikasın!' : `Bugün ${stats.dailyGoal - stats.todayCount} kart daha yapalım mı?`}
+        </p>
+      </motion.section>
+
       <motion.section className="panel goal" variants={item}>
         <Ring value={goal} size={112} stroke={11}>
           <strong className="big-num"><AnimatedNumber value={stats.todayCount} /></strong>
@@ -67,10 +73,8 @@ export function Home({ store, onStart, onOpenWord }: {
         </Ring>
         <div className="goal-text">
           <h2>Günlük hedef</h2>
-          <p className="muted">
-            {goal >= 1 ? 'Bugünkü hedefini tamamladın! 🎉' : `Hedefe ${stats.dailyGoal - stats.todayCount} kart kaldı.`}
-          </p>
-          <motion.button className="btn primary" whileTap={{ scale: 0.96 }} onClick={() => onStart('cards')}>
+          <p className="muted">{stats.todayCount} / {stats.dailyGoal} kart</p>
+          <motion.button className="btn primary" whileTap={PRESS} onClick={() => onStart('cards')}>
             Çalışmaya başla <Icon name="arrow" size={18} />
           </motion.button>
         </div>
@@ -82,10 +86,10 @@ export function Home({ store, onStart, onOpenWord }: {
         <div className="stat fresh"><strong><AnimatedNumber value={fresh} /></strong><span>Yeni</span></div>
       </motion.section>
 
-      <motion.button className="panel wotd" variants={item} whileTap={{ scale: 0.98 }} onClick={() => onOpenWord(wotd)}>
+      <motion.button className="panel wotd" variants={item} whileTap={PRESS} onClick={() => onOpenWord(wotd)}>
         <div className="wotd-img"><WordImage word={wotd} compact /></div>
         <div className="wotd-text">
-          <p className="eyebrow"><Icon name="sparkle" size={14} /> Günün kelimesi</p>
+          <p className="ribbon">Günün kelimesi</p>
           <h3>{wotd.word}</h3>
           <p className="muted">{wotd.turkish} · {POS_TR[wotd.partOfSpeech].toLocaleLowerCase('tr')}</p>
         </div>
@@ -93,12 +97,12 @@ export function Home({ store, onStart, onOpenWord }: {
       </motion.button>
 
       <motion.section className="mode-grid" variants={item}>
-        <motion.button className="mode cards" whileTap={{ scale: 0.96 }} whileHover={{ y: -3 }} onClick={() => onStart('cards')}>
+        <motion.button className="mode cards" whileTap={PRESS} onClick={() => onStart('cards')}>
           <span className="mode-icon"><Icon name="cards" size={26} /></span>
           <strong>Kartlar</strong>
           <span>Kaydır ve öğren</span>
         </motion.button>
-        <motion.button className="mode quiz" whileTap={{ scale: 0.96 }} whileHover={{ y: -3 }} onClick={() => onStart('quiz')}>
+        <motion.button className="mode quiz" whileTap={PRESS} onClick={() => onStart('quiz')}>
           <span className="mode-icon"><Icon name="quiz" size={26} /></span>
           <strong>Quiz</strong>
           <span>{stats.bestQuiz ? `En iyi: ${stats.bestQuiz}/10` : '10 soruluk test'}</span>

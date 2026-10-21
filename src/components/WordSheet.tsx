@@ -2,7 +2,7 @@ import { motion, type PanInfo } from 'motion/react'
 import { useEffect } from 'react'
 import type { Word } from '../data/words'
 import type { Store } from '../lib/store'
-import { POS_TR, speak } from '../lib/util'
+import { POS_TR, speak, PRESS } from '../lib/util'
 import { Icon } from './Icon'
 import { WordImage } from './WordImage'
 
@@ -54,14 +54,14 @@ export function WordSheet({ word, store, onClose }: { word: Word; store: Store; 
         <div className="sheet-actions">
           <motion.button
             className={`btn ${status === 'learning' ? 'danger' : 'ghost'}`}
-            whileTap={{ scale: 0.96 }}
+            whileTap={PRESS}
             onClick={() => store.mark(word.id, 'learning', 0)}
           >
-            Tekrar listesine al
+            Tekrar et
           </motion.button>
           <motion.button
             className={`btn ${status === 'known' ? 'success' : 'ghost'}`}
-            whileTap={{ scale: 0.96 }}
+            whileTap={PRESS}
             onClick={() => store.mark(word.id, 'known', 0)}
           >
             Biliyorum
